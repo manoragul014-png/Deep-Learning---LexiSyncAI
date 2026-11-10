@@ -4,11 +4,13 @@
 
 > **Status:** Source code and 5 automated offline unit tests are implemented and passed in the preparation environment. The large pretrained neural weights, UI end-to-end inference, 2–5 real legal PDF ingestion, and measured results have **not been executed or validated in that environment**. They require installation and tests on your laptop. Never claim the full application or evaluation is validated until you run them yourself.
 
+
 ## System Architecture
 
 ![Deep-Learning---LexiSyncAI](Architecture_Diagram.png)
 
 # Installation guide and steps to run the project :
+
 
 ### Step 1: Download and Open the Project
 1. Unzip the project into your **Documents** folder.
@@ -170,7 +172,6 @@ python evaluate.py --with-llm
 | Citation UI | PDF page number, section, highlighted extracted bbox | user can inspect original text in context | `app.py` |
 | Evaluation | 18 example questions, recall@k, latency, unanswerable cases; manual CSV | comparison and error analysis | `evaluate.py`, `evaluation/` |
 
-**Pipeline diagram:** `docs/Architecture_One_Page.pdf`, also editable visually in `docs/Architecture_One_Page.svg`.
 
 ## User-visible features
 
@@ -183,35 +184,102 @@ python evaluate.py --with-llm
 * Measured retrieval/rerank/generation seconds and token counts when the provider supplies them.
 * JSON output for manual audit.
 
-## Scope and known limitations (tell the professor)
+# Project Scope and Limitations
 
-1. **Real legal accuracy is not guaranteed.** A verbatim quote supports provenance, not necessarily the truth of an inference. An expert must check legal interpretation and legal versions.
-2. Digital PDFs are supported; **OCR for scanned pages is not implemented**. Some scanned pages may also be misdetected by the heuristic; verify them.
-3. Legal section extraction, two-column reading order, and table extraction are **heuristic**. Complex nested tables, headers spanning columns, and footnotes require review.
-4. PDF page numbers are **physical page indices (1-based)**, which can differ from the printed page numbers in legal documents. The citation label makes this explicit.
-5. The region highlight surrounds extracted text blocks, not guaranteed exact claim words. No region-level citation-precision benchmark has been performed.
-6. Cross-document reconciliation is encouraged in the prompt but **not a validated conflict-detection engine**. The answer may abstain if the model notices conflict.
-7. `HIGH/MEDIUM/LOW` are deterministic evidence coverage heuristics, **not statistical confidence**.
-8. Large 100+ page PDFs and the first neural model downloads may take time. Measure and plan around real startup latency.
-9. The app does not fine-tune an embedding model, train a new LLM, implement OCR/VLM, or deploy publicly. Do not list these as completed features.
-10. No answer is generated when provider connection fails; an error is shown instead of a deceptive fallback.
+## 1. Project Scope
 
-## Architecture and reproducibility details
+The LexiSyncAI project is designed to help users search, understand, and retrieve information from legal PDF documents using Retrieval-Augmented Generation (RAG).
 
-* Extraction caches are keyed by PDF SHA-256 + extraction mode. Dense vectors keyed by model identifier and text+chunk fingerprint.
-* Most dependencies are pinned to exact release versions in `requirements.txt`. The native torch/transformers transitive dependency tree is not fully locked; for strict reproducibility run `python -m pip freeze > resolved_requirements.txt` **after successful installation** and commit the lock file. Record Ollama model digest and Python version.
-* Test with `python -m pytest -q` before pushing. Seed non-deterministic operations in any future training code (there is no training here); retrieval algorithms are deterministic given weights/input, while remote LLM generation may vary despite temperature 0.
-* Files in `data/cases/`, `data/cache/`, credentials, private PDFs and `.venv` are excluded from Git by `.gitignore`.
+### Features Included in the Project
 
-## Submission checklist (professor's instructions)
+1. **Digital PDF Support**
+   - The system supports digital PDF documents containing readable text.
+   - Users can upload legal documents and search for relevant information.
 
-- [ ] Run the UI on real public legal PDFs (2–5) and verify one claim and its citation against the original PDF.
-- [ ] Rehearse the **unseen PDF** case, a factual question, one question spanning **two physical pages**, and one truly unanswerable question.
-- [ ] Run and validate the evaluation: at least 15 held-out questions, >=3 unanswerable, multi-hop, recall@k across configurations, manual answer correctness and citation precision, abstention behavior and latency.
-- [ ] Add actual measured numbers/screenshots to `docs/RESULTS_TO_FILL.md` and presentation. Do not invent values.
-- [ ] Record PDF names, dates, hashes, hardware and models in documentation.
-- [ ] Push code to **your own GitHub account**, with incremental meaningful commits. Do not fabricate a repository link or commit history.
-- [ ] Attach documentation/README and one-page architecture; include GitHub link in the documentation. Upload documentation and presentation to eCampus.
-- [ ] Practice the exact 5-minute demo plus 5-minute theory Q&A. See `docs/DEMO_SCRIPT.md` and `docs/THEORY_QA.md`.
+2. **Legal Document Processing**
+   - The system extracts text, sections, and pages from legal PDF documents.
+   - It uses rule-based methods to identify document structure.
 
-**Academic honesty:** This project starter code should be reviewed, understood, tested, modified, and accurately attributed according to your university's AI-tool policy. You need to be able to explain every function and observed result yourself.
+3. **Evidence-Based Answers**
+   - The system generates answers using information retrieved from uploaded documents.
+   - Users can view supporting evidence and check the original PDF pages.
+
+4. **PDF Page References**
+   - The system provides physical PDF page numbers starting from page 1.
+   - These numbers help users locate the supporting information in the original document.
+
+5. **Evidence Highlighting**
+   - The system highlights extracted text regions on PDF pages.
+   - This helps users identify where supporting information is located.
+
+6. **Evidence Coverage Levels**
+   - Answers are assigned `HIGH`, `MEDIUM`, or `LOW` evidence coverage levels.
+   - These levels are calculated using predefined rules.
+
+7. **Cross-Document Analysis**
+   - The system can retrieve information from multiple uploaded documents.
+   - The language model is instructed to consider differences or conflicts between documents.
+
+8. **Error Handling**
+   - If the language model connection fails, the application displays an error message.
+   - It does not generate a misleading answer as a replacement.
+
+### Features Outside the Project Scope
+
+The following features are not implemented in the current version:
+
+- OCR (Optical Character Recognition) for scanned documents.
+- Training or fine-tuning a new language model.
+- Fine-tuning an embedding model.
+- Vision Language Models (VLMs) for image-based document understanding.
+- Public deployment of the application.
+
+---
+
+## 2. Project Limitations
+
+Although LexiSyncAI provides useful features for legal document analysis, it has some limitations.
+
+1. **Legal Accuracy Is Not Guaranteed**
+   - The system may generate an incorrect legal interpretation, even when it provides a correct quotation.
+   - Important legal answers should be verified by a legal expert using the correct version of the law.
+
+2. **Scanned PDFs Are Not Fully Supported**
+   - The system works best with digital PDFs containing readable text.
+   - OCR is not implemented, so scanned documents without a text layer cannot be reliably processed.
+   - Some scanned pages may also be incorrectly identified.
+
+3. **Complex Document Formatting**
+   - The system uses rule-based methods to extract sections, tables, and text.
+   - It may struggle with complicated tables, two-column layouts, and footnotes.
+   - Extracted information may require manual verification.
+
+4. **PDF Page Number Differences**
+   - The system uses physical PDF page numbers.
+   - These numbers may differ from the page numbers printed inside legal documents.
+   - Users should check the original PDF when verifying citations.
+
+5. **Highlighting Accuracy**
+   - Highlighting identifies relevant extracted text blocks, not necessarily the exact words supporting a claim.
+   - The accuracy of these highlighted regions has not been formally evaluated.
+
+6. **Limited Conflict Detection**
+   - The language model is instructed to consider conflicting information across documents.
+   - However, the system does not have a fully tested conflict-detection mechanism.
+   - It may miss conflicts or avoid answering when it notices uncertainty.
+
+7. **Evidence Coverage Is Not Statistical Confidence**
+   - `HIGH`, `MEDIUM`, and `LOW` indicate how well the retrieved evidence covers an answer according to predefined rules.
+   - These levels do not represent the statistical probability that an answer is correct.
+
+8. **Processing Time**
+   - Large PDF documents, especially those exceeding 100 pages, may take longer to process.
+   - Downloading the required AI models during initial setup may also take additional time.
+   - Actual processing time depends on document size, hardware, and system performance.
+
+### Important Note
+
+LexiSyncAI is an academic project developed to demonstrate how RAG can support legal document analysis.
+
+It is not a replacement for professional legal advice. Users should always verify important legal information using official sources and qualified experts.
+
