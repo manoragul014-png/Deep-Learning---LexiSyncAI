@@ -1,0 +1,10 @@
+# Pinned major/minor for reproducibility; exact locks can be generated on your Mac.
+streamlit==1.50.0
+PyMuPDF==1.26.5
+sentence-transformers==5.1.1
+numpy==2.2.6
+requests==2.32.5
+openai==2.6.1
+pandas==2.3.3
+pytest==8.4.2
+Pillow==11.3.0
