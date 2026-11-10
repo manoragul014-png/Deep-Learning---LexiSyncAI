@@ -1,8 +1,15 @@
 # LexiSyncAI - Evidence-Grounded Legal Document Analyst
+Project Introduction
 
-**DA3 Deep Learning & GenAI final project** - Individual project aligned with the supplied course assignment. A Streamlit RAG prototype that searches legal PDFs with BM25 + MiniLM embeddings + reciprocal rank fusion (RRF) + cross-encoder reranking, asks a local Ollama model (or optional API model) to answer with page/section-level citations, verifies citation IDs and literal quotations, and abstains when evidence is inadequate.
+LexiSyncAI is an AI-powered legal document assistant developed as part of the DA3 Deep Learning & Generative AI final assignment.
 
-> **Status:** Source code and 5 automated offline unit tests are implemented and passed in the preparation environment. The large pretrained neural weights, UI end-to-end inference, 2–5 real legal PDF ingestion, and measured results have **not been executed or validated in that environment**. They require installation and tests on your laptop. Never claim the full application or evaluation is validated until you run them yourself.
+The main goal of this project is to help users search, understand, and find relevant information from legal PDF documents more easily and efficiently.
+
+Reading legal documents such as the General Data Protection Regulation (GDPR) and the EU AI Act can be time-consuming because they contain many pages, complex legal terms, and detailed regulations.
+
+LexiSyncAI aims to simplify this process using Retrieval-Augmented Generation (RAG), a technique that combines information retrieval with Generative AI.
+
+Instead of answering questions only from the AI model's existing knowledge, the system first searches the uploaded legal documents, finds the most relevant information, and then uses a language model to generate an answer based on that evidence.
 
 
 ## System Architecture
@@ -276,6 +283,60 @@ Although LexiSyncAI provides useful features for legal document analysis, it has
    - Large PDF documents, especially those exceeding 100 pages, may take longer to process.
    - Downloading the required AI models during initial setup may also take additional time.
    - Actual processing time depends on document size, hardware, and system performance.
+  
+
+## Partially Implemented Features
+
+The following features have been partially implemented in LexiSyncAI. They are functional but require further improvements and evaluation.
+
+### Feature 4: Bounding-Box Citations
+
+**Current Implementation:**
+- The system stores the coordinates of extracted text regions from PDF documents.
+- It highlights the relevant text area on the original PDF page.
+- This helps users locate and verify the evidence supporting an answer.
+
+**Limitations:**
+- The highlighted area may cover an entire text block instead of the exact quoted words.
+- The accuracy of the highlighted regions has not been formally evaluated.
+
+
+### Feature 9: Multi-Document Cross-Referencing
+
+**Current Implementation:**
+- The system can search and retrieve information from multiple uploaded PDF documents.
+- It combines relevant information from different documents to generate answers.
+- The language model is instructed to identify conflicting information between documents.
+
+**Limitations:**
+- Conflict detection depends on the language model's ability to recognize differences.
+- A fully tested mechanism to detect and resolve conflicts between documents has not been implemented.
+
+
+
+### Feature 11: Latency and Cost Report
+
+**Current Implementation:**
+- The system records the time taken for retrieval, reranking, and answer generation.
+- It tracks input and output token usage when available.
+- These measurements help users understand the system's performance.
+
+**Limitations:**
+- A complete cost analysis has not been performed.
+- Performance improvements have not been formally measured and compared.
+
+
+---
+
+### Summary
+
+| Feature | Current Functionality | Status |
+|---------|----------------------|--------|
+| Bounding-Box Citations | Highlights approximate evidence regions in PDF pages | Partially Implemented |
+| Multi-Document Cross-Referencing | Retrieves information from multiple documents and can identify possible conflicts | Partially Implemented |
+| Latency and Cost Report | Tracks processing time and available token usage | Partially Implemented |
+
+**Note:** These features demonstrate the current capabilities of LexiSyncAI. Further development and testing are required to make them fully reliable.
 
 ### Important Note
 
