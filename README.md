@@ -4,6 +4,10 @@
 
 > **Status:** Source code and 5 automated offline unit tests are implemented and passed in the preparation environment. The large pretrained neural weights, UI end-to-end inference, 2–5 real legal PDF ingestion, and measured results have **not been executed or validated in that environment**. They require installation and tests on your laptop. Never claim the full application or evaluation is validated until you run them yourself.
 
+## System Architecture
+
+![LexiSyncAI Architecture](architecture.png)
+
 ## Quick start on macOS / VS Code
 
 **Simplest route:** `bash setup_mac.sh`, then `source .venv/bin/activate`, download the Ollama model, then `./run_mac.sh`. The detailed manual commands are below.
