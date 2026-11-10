@@ -8,43 +8,149 @@
 
 ![Deep-Learning---LexiSyncAI](Architecture_Diagram.png)
 
-## Quick start on macOS / VS Code
+# Installation guide and steps to run the project :
 
-**Simplest route:** `bash setup_mac.sh`, then `source .venv/bin/activate`, download the Ollama model, then `./run_mac.sh`. The detailed manual commands are below.
+### Step 1: Download and Open the Project
+1. Unzip the project into your **Documents** folder.
+2. Open **VS Code**.
+3. Navigate to **File → Open Folder**.
+4. Select the **LexiSyncAI** project folder.
 
-1. Install **Python 3.12** (recommended), Git, and [Ollama](https://ollama.com/download). Python 3.13 may work but if package installation fails use 3.12. You use **VS Code's Terminal**, not a Jupyter notebook/kernel.
-2. Open this `LexiSyncAI` folder in VS Code and open **Terminal > New Terminal**.
-3. Run:
+### Step 2: Install Required Software
+Make sure the following software is installed:
+
+- **Python 3.12**
+- **Ollama**
+- **Visual Studio Code (VS Code)**
+
+Install and start the Ollama application before proceeding.
+
+### Step 3: Set Up the Python Environment
+Open a new terminal in VS Code using **Terminal → New Terminal**.
+
+Run the following command once:
 
 ```bash
-python3.12 -m venv .venv
+bash setup_mac.sh
+```
+
+This command automatically:
+- Creates a virtual environment (`.venv`) inside the project folder.
+- Installs the required Python libraries.
+
+Activate the virtual environment:
+
+```bash
 source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-ollama pull qwen2.5:3b
-# Ensure the Ollama app is running, or in a second terminal use: ollama serve
-python -m streamlit run app.py
 ```
 
-If `python3.12` is missing but your existing Python is compatible, use `python3 -m venv .venv`. The terminal must show `(.venv)`; `which python` should point inside the project's `.venv/bin/`. On Apple silicon, let sentence-transformers use its defaults (CPU is a safe fallback); pretrained models download on the **first index**, so arrange reliable internet beforehand.
+Python will now use the project's virtual environment.
 
-4. In the browser, create a case, upload **2–5 real PUBLIC PDFs** (sources in `docs/SOURCES.md`), and click **Index documents / pre-warm models**. A normal first run can be slower because weights download; subsequent cached runs are faster.
-5. Enter a factual question and click **Answer and show sources**. Read the cited evidence and select an E-number to see the original PDF page with an approximate highlighted block. Then ask a two-article/multi-hop question and an unanswerable question. Never rely on the coverage label as calibrated probability.
-6. Before the professor's exam, start Ollama, confirm both models have been downloaded, test all three question types, and keep the app running.
+### Step 4: Download the Local Language Model
+Make sure Ollama is running.
 
-**If Ollama is not usable:** choose **OpenAI API** in the sidebar, paste your own API key into the password field, and choose the supported model configured in `app.py`. API use may cost money; it is not included with ChatGPT Plus. Only use public non-confidential files. The application does not store the API key in files.
-
-### Run tests and evaluation
+Execute:
 
 ```bash
-python -m pytest -q
-mkdir -p evaluation/pdfs
-# Manually download and add GDPR.pdf, AI_Act.pdf from official sources
-python evaluate.py --retrieval-only
-python evaluate.py --with-llm --provider Ollama --model qwen2.5:3b
+ollama pull qwen2.5:3b
 ```
 
-Read `evaluation/README.md` **before** reporting numbers. The 18-question test has 15 answerable (factual/multi-hop/multi-document) and 3 unanswerable examples. For complete marks, manually validate answer correctness and citation precision in the exported CSV. Compare dense-only vs hybrid and include recall@k, abstention accuracy and latency measured on the same corpus.
+This downloads the **Qwen 2.5 (3B)** language model for local execution.
+
+**Note:** The embedding model and reranker will download automatically during the first indexing operation. An internet connection is required for the initial setup.
+
+### Step 5: Launch the LexiSyncAI Application
+Run:
+
+```bash
+./run_mac.sh
+```
+
+The LexiSyncAI application should automatically open in your web browser using Streamlit.
+
+**Note:** Streamlit does not require selecting a Jupyter kernel in VS Code.
+
+### Step 6: Upload and Index Legal Documents
+1. Open `docs/SOURCES.md`.
+2. Download two real, publicly available legal PDF documents, for example:
+   - General Data Protection Regulation (GDPR)
+   - European Union Artificial Intelligence Act (EU AI Act)
+3. Open the LexiSyncAI application.
+4. Create a new case.
+5. Upload both PDF documents.
+6. Click **Index**.
+
+Observe the extracted:
+- Pages
+- Text chunks
+- Document sections
+- Scanned-page flags
+
+### Step 7: Test the RAG System
+Perform the following tests:
+
+**Test 1: Answer Verification**
+- Ask a question with a verifiable answer.
+- Select evidence **E1** to view the exact physical PDF page supporting the answer.
+
+**Test 2: Multiple-Page Retrieval**
+- Ask a question that requires information from two different physical PDF pages.
+- Verify that the system retrieves relevant evidence from both pages.
+
+**Test 3: Hallucination Prevention**
+- Ask a question that cannot be answered using the uploaded documents.
+- Confirm that the system does not invent unsupported information.
+
+### Step 8: Understand the System Architecture
+Open:
+
+`docs/Architecture_One_Page.pdf`
+
+Explain the architecture in the following sequence:
+
+**Ingestion → Retrieval → Reranking → Generation → Verification → UI/Evaluation**
+
+Review and practice the presentation script available at:
+
+`docs/DEMO_SCRIPT.md`
+
+Aim to complete the project demonstration within **5 minutes**.
+
+### Step 9: Run the Evaluation
+1. Create or locate the `evaluation/pdfs/` folder.
+2. Copy the same two public legal PDF documents into this folder.
+3. Run the retrieval-only evaluation:
+
+```bash
+python evaluate.py --retrieval-only
+```
+
+4. Run the evaluation with the language model:
+
+```bash
+python evaluate.py --with-llm
+```
+
+5. Check and revise the supporting phrases to match the PDF editions used.
+6. Complete the manual review sheet.
+7. Record actual evaluation results in:
+
+`docs/RESULTS_TO_FILL.md`
+
+8. Include the final evaluation metrics in the last slide of your presentation.
+
+---
+
+### Important Notes
+- **Operating system:** These installation steps are intended for macOS.
+- **Python version:** Python 3.12 is recommended for this project.
+- **Local LLM:** Qwen 2.5 (3B), executed using Ollama.
+- **User interface:** Streamlit.
+- **Internet connection:** Required during initial installation and model downloads.
+- **Offline execution:** After all required models and dependencies are downloaded, the project is designed to run locally without an internet connection.
+
+
+
 
 ## How the application works
 
