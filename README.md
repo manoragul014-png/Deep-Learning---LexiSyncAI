@@ -6,7 +6,7 @@
 
 ## System Architecture
 
-![LexiSyncAI Architecture](architecture.png)
+![Deep-Learning---LexiSyncAI](Architecture_Diagram.png)
 
 ## Quick start on macOS / VS Code
 
