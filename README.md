@@ -117,19 +117,11 @@ Perform the following tests:
 - Confirm that the system does not invent unsupported information.
 
 ### Step 8: Understand the System Architecture
-Open:
 
-`docs/Architecture_One_Page.pdf`
-
-Explain the architecture in the following sequence:
+Architecture sequence:
 
 **Ingestion → Retrieval → Reranking → Generation → Verification → UI/Evaluation**
 
-Review and practice the presentation script available at:
-
-`docs/DEMO_SCRIPT.md`
-
-Aim to complete the project demonstration within **5 minutes**.
 
 ### Step 9: Run the Evaluation
 1. Create or locate the `evaluation/pdfs/` folder.
