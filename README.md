@@ -72,7 +72,13 @@ This downloads the **Qwen 2.5 (3B)** language model for local execution.
 Run:
 
 ```bash
-./run_mac.sh
+./run_mac.sh 
+```
+
+or
+
+```bash
+bash run_mac.sh
 ```
 
 The LexiSyncAI application should automatically open in your web browser using Streamlit.
