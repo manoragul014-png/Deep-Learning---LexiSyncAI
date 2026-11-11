@@ -86,14 +86,13 @@ The LexiSyncAI application should automatically open in your web browser using S
 **Note:** Streamlit does not require selecting a Jupyter kernel in VS Code.
 
 ### Step 6: Upload and Index Legal Documents
-1. Open `docs/SOURCES.md`.
-2. Download two real, publicly available legal PDF documents, for example:
+1. Download two real, publicly available legal PDF documents, for example:
    - General Data Protection Regulation (GDPR)
    - European Union Artificial Intelligence Act (EU AI Act)
-3. Open the LexiSyncAI application.
-4. Create a new case.
-5. Upload both PDF documents.
-6. Click **Index**.
+2. Open the LexiSyncAI application.
+3. Create a new case.
+4. Upload both PDF documents.
+5. Click **Index**.
 
 Observe the extracted:
 - Pages
