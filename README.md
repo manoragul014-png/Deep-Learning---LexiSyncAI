@@ -296,7 +296,7 @@ Although LexiSyncAI provides useful features for legal document analysis, it has
 
 The following features have been partially implemented in LexiSyncAI. They are functional but require further improvements and evaluation.
 
-### Feature 2: able Extraction
+### Feature 2: Table Extraction
 
 **Current Implementation:**
 - Extract text from detectable PDF tables and make that information searchable.
