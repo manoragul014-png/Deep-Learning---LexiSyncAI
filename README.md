@@ -143,12 +143,27 @@ python evaluate.py --with-llm
 ---
 
 ### Important Notes
-- **Operating system:** These installation steps are intended for macOS.
-- **Python version:** Python 3.12 is recommended for this project.
-- **Local LLM:** Qwen 2.5 (3B), executed using Ollama.
-- **User interface:** Streamlit.
-- **Internet connection:** Required during initial installation and model downloads.
-- **Offline execution:** After all required models and dependencies are downloaded, the project is designed to run locally without an internet connection.
+## RAG Evaluation and Findings
+
+### Why is evaluation important?
+Evaluation helps us measure how accurately LexiSyncAI retrieves relevant information from legal documents and generates reliable answers. It also helps identify areas for improvement.
+
+### Evaluation Setup
+- **Documents:** GDPR (88 pages) and EU AI Act (144 pages)
+- **Total passages indexed:** 3,268
+- **Test questions:** 18 (15 answerable and 3 unanswerable)
+- **Methods compared:** BM25, Dense, Hybrid, and Hybrid + Reranking
+
+### Key Findings
+- **Best Retrieval Method:** Hybrid + Reranking achieved the highest Recall@10 of **66.7%**.
+- **Correct Refusal Rate:** 100% — the system correctly refused all 3 unanswerable questions.
+- **False Refusal Rate:** 20% — the system declined to answer 3 questions that were actually answerable.
+- **Response Speed:** BM25 was the fastest retrieval method, while Hybrid + Reranking provided better retrieval performance.
+
+### Conclusion
+The evaluation shows that **Hybrid + Reranking delivers the best retrieval results** in our tests. LexiSyncAI successfully identifies questions it cannot answer, but retrieval accuracy and unnecessary refusals still need improvement.
+
+*Note: These are preliminary results. Numerical warnings occurred during retrieval, and manual answer correctness and citation verification are still pending.*
 
 
 
