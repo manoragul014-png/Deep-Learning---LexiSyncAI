@@ -139,11 +139,6 @@ python evaluate.py --with-llm
 
 5. Check and revise the supporting phrases to match the PDF editions used.
 6. Complete the manual review sheet.
-7. Record actual evaluation results in:
-
-`docs/RESULTS_TO_FILL.md`
-
-8. Include the final evaluation metrics in the last slide of your presentation.
 
 ---
 
