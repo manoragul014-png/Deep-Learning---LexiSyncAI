@@ -22,7 +22,7 @@ Respond ONLY as a JSON object with exactly these fields:
      "citations": [{"id": "E1", "quote": "EXACT contiguous substring from E1"}]}
   ],
   "explanation": "Short explanation of how the cited evidence supports the answer.",
-  "conflicts": "Any identified conflicting passages or 'None observed'.",
+  "conflicts": "NONE if there is no conflict; otherwise briefly describe the actual contradictory passages.",
   "missing_evidence": "If unanswerable, what evidence would be needed."
 }
 For unanswerable questions set answerable=false and claims=[].
@@ -45,6 +45,42 @@ def _json_object(s: str):
         if not mat:
             raise ValueError("Model did not return a JSON object.")
         return json.loads(mat.group(0))
+
+
+def has_reported_conflict(value) -> bool:
+    """Interpret model-written conflict text conservatively.
+
+    Accept common no-conflict phrases; keep ambiguous wording as a potential
+    conflict rather than hiding a real contradiction. Not semantic verification.
+    """
+    if value is None:
+        return False
+    if not isinstance(value, str):
+        return bool(value)
+    value = re.sub(r"\s+", " ", value).strip().strip(" \"'`.,;:!?").casefold()
+    if not value or value in {
+        "none", "no", "nil", "n/a", "na", "not applicable", "not observed",
+        "none observed", "none found", "none detected", "none identified",
+        "none reported", "none noted", "no conflicts", "no conflict",
+        "no contradictions", "no contradiction", "no discrepancies",
+        "no inconsistency", "no inconsistencies", "no conflicting evidence",
+    }:
+        return False
+    # Common model output variants such as "No conflicts detected" and
+    # "There are no conflicts in the provided evidence".
+    conflict_word = r"(?:conflicts?|contradictions?|discrepanc(?:y|ies)|inconsistenc(?:y|ies))"
+    prefix = r"(?:there (?:are|is|were|was) )?no (?:material |apparent |potential )?"
+    suffix = (r"(?: (?:were |was |are |is )?(?:found|detected|observed|identified|"
+              r"reported|noted|present))?"
+              r"(?: (?:in|within|between|among) (?:the )?(?:provided |retrieved |cited |"
+              r"source )?(?:evidence|sources|documents|passages))?")
+    if re.fullmatch(prefix + conflict_word + suffix, value):
+        return False
+    if re.fullmatch(r"no (?:conflicting|contradictory|inconsistent) "
+                    r"(?:evidence|information|sources|passages)"
+                    r"(?: (?:found|detected|observed|identified))?", value):
+        return False
+    return True
 
 
 def _abstain(reason, docs, timings=None, usage=None):
@@ -91,8 +127,8 @@ def validate_draft(draft: dict, evidence: list[dict], docs, timings=None, usage=
                               "quote": quote, "chunk_id": chunk.id})
             distinct.add(eid)
     # Qualitative evidence coverage indicator, NOT a probability or calibrated confidence.
-    conflicting = draft.get("conflicts", "").strip()
-    has_conflict = bool(conflicting and conflicting.lower() not in ("none", "none observed", "no"))
+    conflicting = str(draft.get("conflicts") or "").strip()
+    has_conflict = has_reported_conflict(conflicting)
     confidence = "LOW" if has_conflict else ("HIGH" if len(distinct) >= 2 else "MEDIUM")
     return {"answerable": True, "claims": claims,
             "explanation": draft.get("explanation", ""),
