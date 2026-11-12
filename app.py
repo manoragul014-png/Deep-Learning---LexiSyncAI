@@ -12,7 +12,7 @@ from PIL import Image, ImageDraw
 
 from lexisync.ingest import load_or_extract
 from lexisync.retrieval import Retriever
-from lexisync.generation import create_answer
+from lexisync.generation import create_answer, has_reported_conflict
 
 BASE = Path(__file__).resolve().parent
 CACHE = BASE / "data" / "cache"
@@ -154,15 +154,24 @@ if answer and evidence:
             st.write(answer["explanation"])
             st.write("**Reason:** " + answer["missing_evidence"])
         else:
-            st.success("Evidence check passed | " + answer["confidence"])
-            st.caption("Confidence is an uncalibrated evidence-coverage label, not a probability.")
+            message = "Evidence check passed | " + answer["confidence"]
+            if answer["confidence"] == "LOW":
+                st.warning(message)
+            else:
+                st.success(message)
+            st.caption("Confidence is a rule-based citation-coverage/conflict flag, not a probability. "
+                       "LOW means the LLM reported a possible conflict; it does not prove a contradiction.")
             for claim in answer["claims"]:
                 ids = ", ".join(f"[{x['id']}]" for x in claim["citations"])
                 st.markdown(f"- {claim['statement']} **{ids}**")
             st.markdown("**Why the evidence supports the answer**")
             st.write(answer["explanation"])
-            if answer.get("conflicts") and answer["conflicts"].lower() not in ("none", "none observed"):
+            if has_reported_conflict(answer.get("conflicts")):
                 st.warning("Potential conflict: " + answer["conflicts"])
+            with st.expander("Confidence diagnostic (model conflict response)"):
+                st.code(repr(answer.get("conflicts", "")), language=None)
+                st.caption("If LOW appears without a real contradiction, check this field. "
+                           "The label is rule-based and does not measure factual correctness.")
         st.caption("Documents searched: " + ", ".join(answer["documents_searched"]))
         st.markdown("**Timing / token evidence**")
         st.json({**answer.get("timings", {}), **answer.get("usage", {})})
