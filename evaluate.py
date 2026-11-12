@@ -1,12 +1,4 @@
 """Run reproducible retrieval comparison and optional LLM evaluation.
-
-Usage:
-  python evaluate.py --pdf-dir evaluation/pdfs --retrieval-only
-  python evaluate.py --pdf-dir evaluation/pdfs --with-llm --provider Ollama --model qwen2.5:3b
-
-The 18-question dataset has *provisional* passage labels. Verify each gold
-phrase against the exact PDF editions first. LLM correctness and substantive
-citation precision require manual assessment: see review CSV.
 """
 from __future__ import annotations
 
